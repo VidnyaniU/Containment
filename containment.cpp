@@ -1,0 +1,165 @@
+#include <bits/stdc++.h>
+#include <NTL/ZZ.h>
+#include <NTL/matrix.h>
+#include <NTL/mat_ZZ.h>
+#include <NTL/ZZ_p.h>
+#include "containment.hpp"
+using namespace std;
+using namespace NTL;
+
+// constructor for initializing ZZ_p
+solveMatrix::solveMatrix()
+{
+    ZZ p = conv<ZZ>("101");
+    ZZ_p::init(p);
+
+    ZZ_p a = conv<ZZ_p>("10");
+
+    mat_ZZ_p mat;
+
+    // cout << "\n a :: " << a << endl;
+}
+int matDeterminant(int mat[2][2])
+{
+
+    return (mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]);
+}
+int solveMatrix::fact(int z)
+{
+    int f = 1;
+    int i;
+    if (z == 0)
+    {
+        return (f);
+    }
+    else
+    {
+        for (i = 1; i <= z; i++)
+        {
+            f = f * i;
+        }
+    }
+    return (f);
+}
+
+// this function returns all the combinations of the indices
+vector<vector<int>> solveMatrix::combo(vector<int> &arr, int n, int r)
+{
+    int nCr = fact(n) / (fact(r) * fact(n - r));
+
+    // Allocate memory for the 2D array of combinations
+    vector<vector<int>> comboArr(nCr, vector<int>(r));
+    int count = 0;
+
+    int i, j, x, k = 0;
+    vector<int> c_a(r); // Array to store the current combination
+
+    // First combination
+    for (i = 0; i < r; i++)
+    {
+        c_a[i] = i;
+    }
+
+    while (1)
+    {
+        // Copy the current combination to the 2D array
+        for (i = 0; i < r; i++)
+        {
+            comboArr[count][i] = arr[c_a[i]];
+        }
+        count++;
+
+        // Find the rightmost element to increment
+        x = r - 1;
+        while (x >= 0 && c_a[x] == n - r + x)
+        {
+            x--;
+        }
+
+        // Termination condition
+        if (x < 0)
+        {
+            break;
+        }
+
+        // Increment the rightmost element and adjust subsequent elements
+        c_a[x]++;
+        for (j = x + 1; j < r; j++)
+        {
+            c_a[j] = c_a[j - 1] + 1;
+        }
+    }
+
+    return comboArr;
+}
+vector<int> solveMatrix ::getNext(vector<vector<int>> indicesCombination, int row, int indicesSize)
+{
+    vector<int> tempIndices;
+    for (int i = 0; i < indicesSize; i++)
+    {
+        tempIndices.push_back(indicesCombination[row][i]);
+    }
+
+    return tempIndices;
+}
+void solveMatrix::extractMinorDet(int mat[5][5], vector<vector<int>> indicesCombination, int nCr, int indicesSize)
+{
+    // Mat<ZZ> minorMatrix[indicesSize][indicesSize];
+    int minorMatrix[2][2];
+    // minorMatrix.SetDims(indicesSize, indicesSize);
+    int row = nCr;
+    int col = indicesSize;
+
+    for (int i = 0; i < row; ++i)
+    {
+        vector<int> tempRow;
+        vector<int> tempCol;
+        tempRow = getNext(indicesCombination, i, indicesSize);
+        // for (int i = 0; i < row; i++)
+        // {
+        //     cout << tempRow[i] << " ";
+        // }
+        // cout << endl;
+
+        for (int j = 0; j < row; ++j)
+        {
+            tempCol = getNext(indicesCombination, j, indicesSize);
+            // for (int i = 0; i < col; i++)
+            // {
+            //     cout << tempCol[i] << " ";
+            // }
+            // cout << endl;
+            for (int matRow = 0; matRow < indicesSize; matRow++)
+            {
+                for (int matCol = 0; matCol < indicesSize; matCol++)
+                {
+                    minorMatrix[matRow][matCol] = mat[tempRow[matRow]][tempCol[matCol]];
+                    // cout << minorMatrix[matRow][matCol] << " ";
+                }
+                // cout << endl;
+            }
+            // cout << "Determinant::" << matDeterminant(minorMatrix) << endl;
+            int det = matDeterminant(minorMatrix);
+            if (det == 0)
+            {
+                cout << "Rows:: " << endl;
+                for (int i = 0; i < col; i++)
+                {
+                    cout << tempRow[i] << " ";
+                }
+                cout << endl;
+                cout << "Cols:: " << endl;
+
+                for (int i = 0; i < col; i++)
+                {
+                    cout << tempCol[i] << " ";
+                }
+                cout << endl;
+            }
+
+            cout << "================================" << endl;
+
+            cout << endl;
+        }
+    }
+}
