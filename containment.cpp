@@ -8,25 +8,21 @@ using namespace std;
 using namespace NTL;
 
 // constructor for initializing ZZ_p
-solveMatrix::solveMatrix()
+// solveMatrix::solveMatrix()
+// {
+//     ZZ p = conv<ZZ>("101");
+//     ZZ_p::init(p);
+
+//     ZZ_p a = conv<ZZ_p>("10");
+
+//     mat_ZZ_p mat;
+
+//     // cout << "\n a :: " << a << endl;
+// }
+
+long solveMatrix::fact(int z)
 {
-    ZZ p = conv<ZZ>("101");
-    ZZ_p::init(p);
-
-    ZZ_p a = conv<ZZ_p>("10");
-
-    mat_ZZ_p mat;
-
-    // cout << "\n a :: " << a << endl;
-}
-int matDeterminant(int mat[2][2])
-{
-
-    return (mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]);
-}
-int solveMatrix::fact(int z)
-{
-    int f = 1;
+    long f = 1;
     int i;
     if (z == 0)
     {
@@ -102,11 +98,10 @@ vector<int> solveMatrix ::getNext(vector<vector<int>> indicesCombination, int ro
 
     return tempIndices;
 }
-void solveMatrix::extractMinorDet(int mat[5][5], vector<vector<int>> indicesCombination, int nCr, int indicesSize)
+void solveMatrix::extractMinorDet(Mat<ZZ> matrix, vector<vector<int>> indicesCombination, long nCr, int indicesSize)
 {
-    // Mat<ZZ> minorMatrix[indicesSize][indicesSize];
-    int minorMatrix[2][2];
-    // minorMatrix.SetDims(indicesSize, indicesSize);
+    Mat<ZZ> minorMatrix;
+    minorMatrix.SetDims(indicesSize, indicesSize);
     int row = nCr;
     int col = indicesSize;
 
@@ -115,47 +110,23 @@ void solveMatrix::extractMinorDet(int mat[5][5], vector<vector<int>> indicesComb
         vector<int> tempRow;
         vector<int> tempCol;
         tempRow = getNext(indicesCombination, i, indicesSize);
-        // for (int i = 0; i < row; i++)
-        // {
-        //     cout << tempRow[i] << " ";
-        // }
-        // cout << endl;
 
         for (int j = 0; j < row; ++j)
         {
+        cout << "======= MATRIX NO. " << i*j << "========" << endl;
             tempCol = getNext(indicesCombination, j, indicesSize);
-            // for (int i = 0; i < col; i++)
-            // {
-            //     cout << tempCol[i] << " ";
-            // }
-            // cout << endl;
+
             for (int matRow = 0; matRow < indicesSize; matRow++)
             {
                 for (int matCol = 0; matCol < indicesSize; matCol++)
                 {
-                    minorMatrix[matRow][matCol] = mat[tempRow[matRow]][tempCol[matCol]];
-                    // cout << minorMatrix[matRow][matCol] << " ";
-                }
-                // cout << endl;
-            }
-            // cout << "Determinant::" << matDeterminant(minorMatrix) << endl;
-            int det = matDeterminant(minorMatrix);
-            if (det == 0)
-            {
-                cout << "Rows:: " << endl;
-                for (int i = 0; i < col; i++)
-                {
-                    cout << tempRow[i] << " ";
+                    minorMatrix[matRow][matCol] = matrix[tempRow[matRow]][tempCol[matCol]];
+                    cout << minorMatrix[matRow][matCol] << " ";
                 }
                 cout << endl;
-                cout << "Cols:: " << endl;
+            }
 
-                for (int i = 0; i < col; i++)
-                {
-                    cout << tempCol[i] << " ";
-                }
-                cout << endl;
-            }
+            cout << "Determinant :: " << determinant(minorMatrix) << endl;
 
             cout << "================================" << endl;
 

@@ -5,7 +5,7 @@ using namespace std;
 int main()
 {
     // int orderOfMatrix = 20;
-    vector<int> arr = {0, 1, 2, 3, 4};
+    vector<int> arr = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
     // for (int i = 0; i < orderOfMatrix; i++)
     // {
     //     arr.push_back(i);
@@ -27,24 +27,20 @@ int main()
     // Close the file
     file.close();
     // file1.close();
-    int mat[5][5] = {
-        {18, 24, 39, 4, 35},
-        {6, 27, 8, 8, 89},
-        {11, 2, 14, 14, 13},
-        {19, 17, 18, 12, 12},
-        {23, 65, 34, 12, 12}};
 
-    int nCr = m1.fact(n) / (m1.fact(r) * m1.fact(n - r));
-    // cout << nCr << endl;
+    long nCr = m1.fact(n) / (m1.fact(r) * m1.fact(n - r));
+    cout << nCr << endl;
     vector<vector<int>> combinations = m1.combo(arr, n, r);
     // for (int i = 0; i < nCr; i++)
     // {
+    //     cout << endl
+    //          << "Combo No." << i << endl;
     //     for (int j = 0; j < r; j++)
     //     {
     //         cout << combinations[i][j] << " ";
     //     }
     //     cout << endl;
     // }
-    // m1.extractMinorDet(mat, combinations, nCr, r);
+    m1.extractMinorDet(matrix, combinations, nCr, r);
     return 0;
 }
