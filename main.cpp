@@ -17,7 +17,7 @@ int main()
 
     ifstream file("inputMatrix.txt");
     // ofstream file1("output.txt");
-    Mat<ZZ> matrix;
+    mat_ZZ_p matrix;
     // Read the matrix from the file
     file >> matrix;
     // file1 << mat;

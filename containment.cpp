@@ -6,20 +6,17 @@
 #include "containment.hpp"
 using namespace std;
 using namespace NTL;
+ofstream file1("output.txt");
 
 // constructor for initializing ZZ_p
-// solveMatrix::solveMatrix()
-// {
-//     ZZ p = conv<ZZ>("101");
-//     ZZ_p::init(p);
+solveMatrix::solveMatrix()
+{
+    ZZ p = conv<ZZ>("101");
+    ZZ_p::init(p);
+    // mat_ZZ_p mat;
+}
 
-//     ZZ_p a = conv<ZZ_p>("10");
-
-//     mat_ZZ_p mat;
-
-//     // cout << "\n a :: " << a << endl;
-// }
-
+// to find factorial of a number which is later on used to find number of combinations
 long solveMatrix::fact(int z)
 {
     long f = 1;
@@ -88,6 +85,8 @@ vector<vector<int>> solveMatrix::combo(vector<int> &arr, int n, int r)
 
     return comboArr;
 }
+
+// function to get next combination from the combination vector
 vector<int> solveMatrix ::getNext(vector<vector<int>> indicesCombination, int row, int indicesSize)
 {
     vector<int> tempIndices;
@@ -98,9 +97,11 @@ vector<int> solveMatrix ::getNext(vector<vector<int>> indicesCombination, int ro
 
     return tempIndices;
 }
-void solveMatrix::extractMinorDet(Mat<ZZ> matrix, vector<vector<int>> indicesCombination, long nCr, int indicesSize)
+
+// this function will extract a minor and find its determinant
+void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<vector<int>> indicesCombination, long nCr, int indicesSize)
 {
-    Mat<ZZ> minorMatrix;
+    mat_ZZ_p minorMatrix;
     minorMatrix.SetDims(indicesSize, indicesSize);
     int row = nCr;
     int col = indicesSize;
@@ -113,7 +114,7 @@ void solveMatrix::extractMinorDet(Mat<ZZ> matrix, vector<vector<int>> indicesCom
 
         for (int j = 0; j < row; ++j)
         {
-        cout << "======= MATRIX NO. " << i*j << "========" << endl;
+            cout << "======= MATRIX NO. " << i * j << "========" << endl;
             tempCol = getNext(indicesCombination, j, indicesSize);
 
             for (int matRow = 0; matRow < indicesSize; matRow++)
@@ -126,11 +127,29 @@ void solveMatrix::extractMinorDet(Mat<ZZ> matrix, vector<vector<int>> indicesCom
                 cout << endl;
             }
 
-            cout << "Determinant :: " << determinant(minorMatrix) << endl;
+            ZZ_p det = determinant(minorMatrix);
+            cout << "Determinant :: " << det << endl;
+            if (det == 0)
+            {
+            file1 << "======================" << endl;
+                file1 << "Rows :: " << endl;
+                for (int i = 0; i < indicesSize; i++)
+                {
+                    file1 << tempRow[i] << " ";
+                }
+                file1 << endl;
+                file1 << "Cols :: " << endl;
 
+                for (int i = 0; i < indicesSize; i++)
+                {
+                    file1 << tempCol[i] << " ";
+                }
+                file1 << endl;
+            }
             cout << "================================" << endl;
 
             cout << endl;
         }
     }
 }
+// file1.close();
