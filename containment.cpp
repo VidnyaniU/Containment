@@ -103,16 +103,17 @@ void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<vector<int>> indicesCo
 {
     mat_ZZ_p minorMatrix;
     minorMatrix.SetDims(indicesSize, indicesSize);
+    int i, j;
     int row = nCr;
     int col = indicesSize;
 
-    for (int i = 0; i < row; ++i)
+    for (i = 0; i < row; ++i)
     {
         vector<int> tempRow;
         vector<int> tempCol;
         tempRow = getNext(indicesCombination, i, indicesSize);
 
-        for (int j = 0; j < row; ++j)
+        for (j = 0; j < row; ++j)
         {
             cout << "======= MATRIX NO. " << i * j << "========" << endl;
             tempCol = getNext(indicesCombination, j, indicesSize);
@@ -131,7 +132,7 @@ void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<vector<int>> indicesCo
             cout << "Determinant :: " << det << endl;
             if (det == 0)
             {
-            file1 << "======================" << endl;
+                file1 << "======================" << endl;
                 file1 << "Rows :: " << endl;
                 for (int i = 0; i < indicesSize; i++)
                 {
@@ -151,5 +152,6 @@ void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<vector<int>> indicesCo
             cout << endl;
         }
     }
+    cout << "Final matrix count :: " << i * j << endl;
+    file1.close();
 }
-// file1.close();
