@@ -6,7 +6,6 @@
 #include "containment.hpp"
 using namespace std;
 using namespace NTL;
-ofstream file1("output.txt");
 
 // constructor for initializing ZZ_p
 solveMatrix::solveMatrix()
@@ -99,8 +98,11 @@ vector<int> solveMatrix ::getNext(vector<vector<int>> indicesCombination, int ro
 }
 
 // this function will extract a minor and find its determinant
-void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<vector<int>> indicesCombination, long nCr, int indicesSize)
+void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<vector<int>> indicesCombination, long nCr, int indicesSize , string fileName)
 {
+    // ofstream file1("output.txt");
+    ofstream file1(fileName);
+
     mat_ZZ_p minorMatrix;
     minorMatrix.SetDims(indicesSize, indicesSize);
     int i, j;
