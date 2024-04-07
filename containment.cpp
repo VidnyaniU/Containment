@@ -33,7 +33,7 @@ long solveMatrix::fact(int z)
     }
     return (f);
 }
-
+/*
 // this function returns all the combinations of the indices
 vector<vector<int>> solveMatrix::combo(vector<int> &arr, int n, int r)
 {
@@ -156,4 +156,69 @@ void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<vector<int>> indicesCo
     }
     cout << "Final matrix count :: " << i * j << endl;
     file1.close();
+}
+*/
+
+// function to get next combination from the combination vector
+
+vector<int> solveMatrix::get_next(vector<int> combo, int n, int r)
+{
+    // Find the rightmost element to increment
+    int x = r - 1;
+    while (x >= 0 && combo[x] == n - r + x)
+    {
+        x--;
+    }
+
+    // termination condition
+    if (x < 0)
+    {
+        return {};
+    }
+    // Increment the rightmost element and adjust subsequent elements
+    combo[x]++;
+    for (int j = x + 1; j < r; j++)
+    {
+        combo[j] = combo[j - 1] + 1;
+    }
+
+    return combo;
+}
+// this function will extract a minor and find its determinant
+void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<int> combo, long nCr, int n, int indicesSize)
+{
+    // ofstream file1("output.txt");
+    // ofstream file1(fileName);
+
+    mat_ZZ_p minorMatrix;
+    minorMatrix.SetDims(indicesSize, indicesSize);
+    int i, j;
+
+    vector<int> tempRow = combo; // first row indices
+    for (i = 1; i <= nCr; ++i)
+    {
+        vector<int> tempCol = combo; // first col indices
+
+        for (j = 1; j <= nCr; ++j)
+        {
+            cout << "======= MATRIX NO. " << i * j << "========" << endl;
+
+            for (int matRow = 0; matRow < indicesSize; matRow++)
+            {
+                for (int matCol = 0; matCol < indicesSize; matCol++)
+                {
+                    minorMatrix[matRow][matCol] = matrix[tempRow[matRow]][tempCol[matCol]];
+                    cout << minorMatrix[matRow][matCol] << " ";
+                }
+                cout << endl;
+            }
+
+            ZZ_p det = determinant(minorMatrix);
+            cout << "Determinant :: " << det << endl;
+            cout << "===========================" << endl;
+            tempCol = get_next(tempCol, n, indicesSize);
+        }
+        tempRow = get_next(tempRow, n, indicesSize);
+    }
+    cout << "Final matrix count :: " << (i - 1) * (j - 1) << endl;
 }

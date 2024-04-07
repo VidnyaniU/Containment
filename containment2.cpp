@@ -3,7 +3,7 @@
 #include <NTL/matrix.h>
 #include <NTL/mat_ZZ.h>
 #include <NTL/ZZ_p.h>
-#include "containment.hpp"
+// #include "containment.hpp"
 using namespace std;
 using namespace NTL;
 
@@ -59,12 +59,12 @@ vector<int> get_next(vector<int> &combo, int n, int r)
     return combo;
 }
 // this function will extract a minor and find its determinant
-void extractMinorDet(mat_ZZ matrix, vector<int> combo, long nCr, int n, int indicesSize)
+void extractMinorDet(mat_ZZ_p matrix, vector<int> combo, long nCr, int n, int indicesSize)
 {
     // ofstream file1("output.txt");
     // ofstream file1(fileName);
 
-    mat_ZZ minorMatrix;
+    mat_ZZ_p minorMatrix;
     minorMatrix.SetDims(indicesSize, indicesSize);
     int i, j;
     ;
@@ -87,7 +87,7 @@ void extractMinorDet(mat_ZZ matrix, vector<int> combo, long nCr, int n, int indi
                 cout << endl;
             }
 
-            ZZ det = determinant(minorMatrix);
+            ZZ_p det = determinant(minorMatrix);
             cout << "Determinant :: " << det << endl;
             cout << "===========================" << endl;
             tempCol = get_next(tempCol, n, indicesSize);
@@ -97,34 +97,34 @@ void extractMinorDet(mat_ZZ matrix, vector<int> combo, long nCr, int n, int indi
     cout << "Final matrix count :: " << (i - 1) * (j - 1) << endl;
 }
 
-int main()
-{
+// int main()
+// {
 
-    int orderOfMat = 20;
-    int orderOfMinor;
-    cout << "Enter the order of the minor :: ";
-    cin >> orderOfMinor;
-    cout << endl;
+//     int orderOfMat = 20;
+//     int orderOfMinor;
+//     cout << "Enter the order of the minor :: ";
+//     cin >> orderOfMinor;
+//     cout << endl;
 
-    ifstream file("inputMatrix.txt");
-    // ofstream file1("output.txt");
-    mat_ZZ matrix;
-    // Read the matrix from the file
-    file >> matrix;
-    // file1 << mat;
+//     ifstream file("inputMatrix.txt");
+//     // ofstream file1("output.txt");
+//     mat_ZZ_p matrix;
+//     // Read the matrix from the file
+//     file >> matrix;
+//     // file1 << mat;
 
-    // Close the file
-    file.close();
-    // vector<vector<int>> matrix = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25}};
-    long nCr = fact(orderOfMat) / (fact(orderOfMinor) * fact(orderOfMat - orderOfMinor));
-    // first combination
-    vector<int> combo(orderOfMinor);
-    for (int i = 0; i < orderOfMinor; i++)
-    {
-        combo[i] = i;
-        // cout << combo[i] << " ";
-    }
-    // cout << endl;
-    extractMinorDet(matrix, combo, nCr, orderOfMat, orderOfMinor);
-    return 0;
-}
+//     // Close the file
+//     file.close();
+//     // vector<vector<int>> matrix = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25}};
+//     long nCr = fact(orderOfMat) / (fact(orderOfMinor) * fact(orderOfMat - orderOfMinor));
+//     // first combination
+//     vector<int> combo(orderOfMinor);
+//     for (int i = 0; i < orderOfMinor; i++)
+//     {
+//         combo[i] = i;
+//         // cout << combo[i] << " ";
+//     }
+//     // cout << endl;
+//     extractMinorDet(matrix, combo, nCr, orderOfMat, orderOfMinor);
+//     return 0;
+// }
