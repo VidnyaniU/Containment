@@ -33,131 +33,6 @@ long solveMatrix::fact(int z)
     }
     return (f);
 }
-/*
-// this function returns all the combinations of the indices
-vector<vector<int>> solveMatrix::combo(vector<int> &arr, int n, int r)
-{
-    int nCr = fact(n) / (fact(r) * fact(n - r));
-
-    // Allocate memory for the 2D array of combinations
-    vector<vector<int>> comboArr(nCr, vector<int>(r));
-    int count = 0;
-
-    int i, j, x, k = 0;
-    vector<int> c_a(r); // Array to store the current combination
-
-    // First combination
-    for (i = 0; i < r; i++)
-    {
-        c_a[i] = i;
-    }
-
-    while (1)
-    {
-        // Copy the current combination to the 2D array
-        for (i = 0; i < r; i++)
-        {
-            comboArr[count][i] = arr[c_a[i]];
-        }
-        count++;
-
-        // Find the rightmost element to increment
-        x = r - 1;
-        while (x >= 0 && c_a[x] == n - r + x)
-        {
-            x--;
-        }
-
-        // Termination condition
-        if (x < 0)
-        {
-            break;
-        }
-
-        // Increment the rightmost element and adjust subsequent elements
-        c_a[x]++;
-        for (j = x + 1; j < r; j++)
-        {
-            c_a[j] = c_a[j - 1] + 1;
-        }
-    }
-
-    return comboArr;
-}
-
-// function to get next combination from the combination vector
-vector<int> solveMatrix ::getNext(vector<vector<int>> indicesCombination, int row, int indicesSize)
-{
-    vector<int> tempIndices;
-    for (int i = 0; i < indicesSize; i++)
-    {
-        tempIndices.push_back(indicesCombination[row][i]);
-    }
-
-    return tempIndices;
-}
-
-// this function will extract a minor and find its determinant
-void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<vector<int>> indicesCombination, long nCr, int indicesSize , string fileName)
-{
-    // ofstream file1("output.txt");
-    ofstream file1(fileName);
-
-    mat_ZZ_p minorMatrix;
-    minorMatrix.SetDims(indicesSize, indicesSize);
-    int i, j;
-    int row = nCr;
-    int col = indicesSize;
-
-    for (i = 0; i < row; ++i)
-    {
-        vector<int> tempRow;
-        vector<int> tempCol;
-        tempRow = getNext(indicesCombination, i, indicesSize);
-
-        for (j = 0; j < row; ++j)
-        {
-            cout << "======= MATRIX NO. " << i * j << "========" << endl;
-            tempCol = getNext(indicesCombination, j, indicesSize);
-
-            for (int matRow = 0; matRow < indicesSize; matRow++)
-            {
-                for (int matCol = 0; matCol < indicesSize; matCol++)
-                {
-                    minorMatrix[matRow][matCol] = matrix[tempRow[matRow]][tempCol[matCol]];
-                    cout << minorMatrix[matRow][matCol] << " ";
-                }
-                cout << endl;
-            }
-
-            ZZ_p det = determinant(minorMatrix);
-            cout << "Determinant :: " << det << endl;
-            if (det == 0)
-            {
-                file1 << "======================" << endl;
-                file1 << "Rows :: " << endl;
-                for (int i = 0; i < indicesSize; i++)
-                {
-                    file1 << tempRow[i] << " ";
-                }
-                file1 << endl;
-                file1 << "Cols :: " << endl;
-
-                for (int i = 0; i < indicesSize; i++)
-                {
-                    file1 << tempCol[i] << " ";
-                }
-                file1 << endl;
-            }
-            cout << "================================" << endl;
-
-            cout << endl;
-        }
-    }
-    cout << "Final matrix count :: " << i * j << endl;
-    file1.close();
-}
-*/
 
 // function to get next combination from the combination vector
 
@@ -220,41 +95,42 @@ vector<int> solveMatrix::get_kth_combination(int n, int r, int _index)
     return result_vec;
 }
 
-// this function will extract a minor and find its determinant
-void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<int> combo, long nCr, int n, int indicesSize)
+mat_ZZ_p solveMatrix::extractMinor(mat_ZZ_p matrix, vector<int> tempRow, vector<int> tempCol)
 {
-    // ofstream file1("output.txt");
-    // ofstream file1(fileName);
+    int order_of_minor = tempRow.size();
+    mat_ZZ_p minor_matrix;
+    minor_matrix.SetDims(order_of_minor, order_of_minor);
+    for (int matRow = 0; matRow < order_of_minor; matRow++)
+    {
+        for (int matCol = 0; matCol < order_of_minor; matCol++)
+        {
+            minor_matrix[matRow][matCol] = matrix[tempRow[matRow]][tempCol[matCol]];
+            // cout << minor_matrix[matRow][matCol] << " ";
+        }
+        // cout << endl;
+    }
 
-    mat_ZZ_p minorMatrix;
-    minorMatrix.SetDims(indicesSize, indicesSize);
-    int i, j;
-
+    return minor_matrix;
+}
+// this function will extract a minor and find its determinant
+void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int k, long nCr, int n, int order_of_minor)
+{
+    int row, col;
+    vector<int> combo = get_kth_combination(n, order_of_minor, k);
     vector<int> tempRow = combo; // first row indices
-    for (i = 1; i <= nCr; ++i)
+    for (row = 1; row <= nCr; ++row)
     {
         vector<int> tempCol = combo; // first col indices
 
-        for (j = 1; j <= nCr; ++j)
+        for (col = 1; col <= nCr; ++col)
         {
-            cout << "======= MATRIX NO. " << i * j << "========" << endl;
-
-            for (int matRow = 0; matRow < indicesSize; matRow++)
-            {
-                for (int matCol = 0; matCol < indicesSize; matCol++)
-                {
-                    minorMatrix[matRow][matCol] = matrix[tempRow[matRow]][tempCol[matCol]];
-                    cout << minorMatrix[matRow][matCol] << " ";
-                }
-                cout << endl;
-            }
-
-            ZZ_p det = determinant(minorMatrix);
+            cout << "======= MATRIX NO. " << row * col << "========" << endl;
+            ZZ_p det = determinant(extractMinor(matrix, tempRow, tempCol));
             cout << "Determinant :: " << det << endl;
             cout << "===========================" << endl;
-            tempCol = get_next(tempCol, n, indicesSize);
+            tempCol = get_next(tempCol, n, order_of_minor);
         }
-        tempRow = get_next(tempRow, n, indicesSize);
+        tempRow = get_next(tempRow, n, order_of_minor);
     }
-    cout << "Final matrix count :: " << (i - 1) * (j - 1) << endl;
+    cout << "Final matrix count :: " << (row - 1) * (col - 1) << endl;
 }
