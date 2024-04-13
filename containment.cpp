@@ -184,6 +184,42 @@ vector<int> solveMatrix::get_next(vector<int> combo, int n, int r)
 
     return combo;
 }
+
+vector<int> solveMatrix::get_kth_combination(int n, int r, int _index)
+{
+    if (r < 0 || r > n)
+    {
+        cerr << "\n get_kth_combination :: Value error : invalid value of r :: " << r << endl;
+        return vector<int>();
+    }
+
+    ZZ index = conv<ZZ>(_index);
+    vector<int> result_vec(r);
+
+    // Initialize the first combination: [0, 1, ..., r-1]
+    for (int i = 0; i < r; ++i)
+    {
+        result_vec[i] = i;
+    }
+
+    for (int i = 1; i < _index; ++i)
+    {
+        int j = r - 1;
+        while (result_vec[j] == n - r + j)
+        {
+            --j;
+        }
+
+        ++result_vec[j];
+        for (int k = j + 1; k < r; ++k)
+        {
+            result_vec[k] = result_vec[k - 1] + 1;
+        }
+    }
+
+    return result_vec;
+}
+
 // this function will extract a minor and find its determinant
 void solveMatrix::extractMinorDet(mat_ZZ_p matrix, vector<int> combo, long nCr, int n, int indicesSize)
 {

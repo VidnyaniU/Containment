@@ -15,4 +15,5 @@ public:
     // vector<int> getNext(vector<vector<int>> indicesCombination, int row, int indicesSize);
     void extractMinorDet(mat_ZZ_p matrix, vector<int> combo, long nCr, int n, int indicesSize);
     // void extractMinorDet(mat_ZZ_p mat, vector<vector<int>> indicesCombination, long nCr, int indicesSize, string fileName);
+    vector<int> get_kth_combination(int n, int r, int _index);
 };
