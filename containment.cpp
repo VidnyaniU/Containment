@@ -113,24 +113,146 @@ mat_ZZ_p solveMatrix::extractMinor(mat_ZZ_p matrix, vector<int> tempRow, vector<
     return minor_matrix;
 }
 // this function will extract a minor and find its determinant
-void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int k, long nCr, int n, int order_of_minor)
+
+/*
+int cnt = 0;
+void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int k, long nCr, int n, int order_of_minor, int quota)
 {
     int row, col;
     vector<int> combo = get_kth_combination(n, order_of_minor, k);
     vector<int> tempRow = combo; // first row indices
-    for (row = 1; row <= nCr; ++row)
+    for (row = 1; row < quota; ++row)
     {
-        vector<int> tempCol = combo; // first col indices
+        vector<int> tempCol = get_kth_combination(n, order_of_minor, 0); // first col indices
 
-        for (col = 1; col <= nCr; ++col)
+        for (col = 1; col < nCr; ++col)
         {
-            cout << "======= MATRIX NO. " << row * col << "========" << endl;
+            cnt++;
+            cout << "======= MATRIX NO. " << row * col << "======== " << endl;
             ZZ_p det = determinant(extractMinor(matrix, tempRow, tempCol));
             cout << "Determinant :: " << det << endl;
-            cout << "===========================" << endl;
+            cout << "===========================" << cnt << endl;
             tempCol = get_next(tempCol, n, order_of_minor);
         }
         tempRow = get_next(tempRow, n, order_of_minor);
     }
-    cout << "Final matrix count :: " << (row - 1) * (col - 1) << endl;
+
+    // cout << "Final matrix count :: " << (row - 1) * (col - 1) << endl;
+}*/
+
+ofstream p0_out("p0_indices_2.txt");
+ofstream p1_out("p1_indices_2.txt");
+ofstream p2_out("p2_indices_2.txt");
+ofstream p3_out("p3_indices_2.txt");
+
+// ofstream col_out("col_indices_2.txt");
+
+void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int n, int processID)
+{
+    // int n =  matrix.NumRows();
+    // cout << "Processor :: " << processID << endl;
+
+    int order_of_minor = 2;
+    long nCr = fact(n) / (fact(order_of_minor) * fact(n - order_of_minor));
+    int np = 4; // num of processors
+    int quota = nCr / np;
+    int k = processID * quota;
+
+    int row, col;
+    vector<int> combo = get_kth_combination(n, order_of_minor, k);
+    vector<int> tempRow = combo; // first row indices
+    for (row = 1; row <= quota; ++row)
+    {
+        vector<int> tempCol = get_kth_combination(n, order_of_minor, 0); // first col indices
+
+        for (col = 1; col < nCr; ++col)
+        {
+            // cout << "======= MATRIX NO. " << row * col << "======== " << endl;
+            // fout << "Processor :: " << processID << endl;
+            // fout << "======= MATRIX NO. " << row * col << "======== " << endl;
+
+            ZZ_p det = determinant(extractMinor(matrix, tempRow, tempCol));
+            // cout << "Determinant :: " << det << endl;
+            if (det == 0)
+            {
+                // row_out << endl;
+                // col_out << endl;
+                switch (processID)
+                {
+                case 0:
+                {
+                    for (int index = 0; index < order_of_minor; index++)
+                    {
+                        p0_out << tempRow[index] << " ";
+                        // fout << endl;
+                        p0_out << tempCol[index] << " ";
+                    }
+                    p0_out << endl
+                           << "==========" << endl;
+                }
+                break;
+                case 1:
+                {
+                    for (int index = 0; index < order_of_minor; index++)
+                    {
+                        p1_out << tempRow[index] << " ";
+                        // fout << endl;
+                        p1_out << tempCol[index] << " ";
+                    }
+                    p1_out << endl
+                           << "==========" << endl;
+                }
+                break;
+                case 2:
+                {
+                    for (int index = 0; index < order_of_minor; index++)
+                    {
+                        p2_out << tempRow[index] << " ";
+                        // fout << endl;
+                        p2_out << tempCol[index] << " ";
+                    }
+                    p2_out << endl
+                           << "==========" << endl;
+                }
+                break;
+                case 3:
+                {
+                    for (int index = 0; index < order_of_minor; index++)
+                    {
+                        p3_out << tempRow[index] << " ";
+                        // fout << endl;
+                        p3_out << tempCol[index] << " ";
+                    }
+                    p3_out << endl
+                           << "==========" << endl;
+                }
+                break;
+                default:
+                    cout << "Lmao !!" << endl;
+                }
+                /*
+                for (int index = 0; index < order_of_minor; index++)
+                {
+                    row_out << tempRow[index] << " ";
+                    // fout << endl;
+                    row_out << tempCol[index] << " ";
+                }
+                row_out << endl
+                        << "==========" << endl;*/
+
+                // col_out << endl
+                // << "==========" << endl;
+            }
+
+            // fout << "Determinant :: " << det << endl;
+
+            // cout << "===========================" << endl;
+            // fout << "===========================" << endl;
+
+            tempCol = get_next(tempCol, n, order_of_minor);
+        }
+        tempRow = get_next(tempRow, n, order_of_minor);
+    }
+    // cout << "Final matrix count :: " << (row - 1) * (col - 1) << endl;
 }
+// fout.close();
