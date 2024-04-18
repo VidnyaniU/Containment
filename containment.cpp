@@ -140,10 +140,10 @@ void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int k, long nCr, int n, int o
     // cout << "Final matrix count :: " << (row - 1) * (col - 1) << endl;
 }*/
 
-ofstream p0_out("p0_indices_2.txt");
-ofstream p1_out("p1_indices_2.txt");
-ofstream p2_out("p2_indices_2.txt");
-ofstream p3_out("p3_indices_2.txt");
+// ofstream p0_out("p0_indices_2.txt");
+// ofstream p1_out("p1_indices_2.txt");
+// ofstream p2_out("p2_indices_2.txt");
+// ofstream p3_out("p3_indices_2.txt");
 
 // ofstream col_out("col_indices_2.txt");
 
@@ -177,59 +177,27 @@ void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int n, int processID)
             {
                 // row_out << endl;
                 // col_out << endl;
-                switch (processID)
+                stringstream filenameStream;
+                filenameStream << "result_" << processID << ".txt";
+                string filename = filenameStream.str();
+
+                ofstream fout(filename, ios::app);
+                if (fout.is_open())
                 {
-                case 0:
-                {
+
                     for (int index = 0; index < order_of_minor; index++)
                     {
-                        p0_out << tempRow[index] << " ";
+                        fout << tempRow[index] << " ";
                         // fout << endl;
-                        p0_out << tempCol[index] << " ";
+                        fout << tempCol[index] << " ";
                     }
-                    p0_out << endl
-                           << "==========" << endl;
+                    fout << endl;
+
+                    fout.close();
                 }
-                break;
-                case 1:
-                {
-                    for (int index = 0; index < order_of_minor; index++)
-                    {
-                        p1_out << tempRow[index] << " ";
-                        // fout << endl;
-                        p1_out << tempCol[index] << " ";
-                    }
-                    p1_out << endl
-                           << "==========" << endl;
-                }
-                break;
-                case 2:
-                {
-                    for (int index = 0; index < order_of_minor; index++)
-                    {
-                        p2_out << tempRow[index] << " ";
-                        // fout << endl;
-                        p2_out << tempCol[index] << " ";
-                    }
-                    p2_out << endl
-                           << "==========" << endl;
-                }
-                break;
-                case 3:
-                {
-                    for (int index = 0; index < order_of_minor; index++)
-                    {
-                        p3_out << tempRow[index] << " ";
-                        // fout << endl;
-                        p3_out << tempCol[index] << " ";
-                    }
-                    p3_out << endl
-                           << "==========" << endl;
-                }
-                break;
-                default:
-                    cout << "Lmao !!" << endl;
-                }
+                else
+                    cerr << "Unable to open the file!";
+
                 /*
                 for (int index = 0; index < order_of_minor; index++)
                 {
