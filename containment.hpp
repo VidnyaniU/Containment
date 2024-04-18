@@ -16,5 +16,6 @@ public:
     // void extractMinorDet(mat_ZZ_p mat, vector<vector<int>> indicesCombination, long nCr, int indicesSize, string fileName);
     vector<int> get_kth_combination(int n, int r, int _index);
     mat_ZZ_p extractMinor(mat_ZZ_p matrix, vector<int> tempRow, vector<int> tempCol);
-    void extractMinorDet(mat_ZZ_p matrix, int k, long nCr, int n, int order_of_minor);
+    // void extractMinorDet(mat_ZZ_p matrix, int k, long nCr, int n, int order_of_minor, int quota);
+    void extractMinorDet(mat_ZZ_p matrix, int n, int world_rank);
 };
