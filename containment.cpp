@@ -140,12 +140,8 @@ void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int k, long nCr, int n, int o
     // cout << "Final matrix count :: " << (row - 1) * (col - 1) << endl;
 }*/
 
-// ofstream p0_out("p0_indices_2.txt");
-// ofstream p1_out("p1_indices_2.txt");
-// ofstream p2_out("p2_indices_2.txt");
-// ofstream p3_out("p3_indices_2.txt");
 
-// ofstream col_out("col_indices_2.txt");
+
 
 void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int n, int processID)
 {
