@@ -111,10 +111,8 @@ int main()
     int dev = 2;
 
     ans = setDiff(combo, 20); // combo we get from input from result file later on
-    // for (int i = 0; i < ans.size(); i++)
-    // {
-    //     cout << ans[i] << " ";
-    // }
+   
+    // later to be used in extract_minor
     vector<int> prev_combo = {0, 1}; // this will be given from get_kth_combo
     int nCr = 153;
     for (int i = 0; i < nCr; i++)
