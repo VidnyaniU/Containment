@@ -3,10 +3,10 @@ using namespace std;
 int main()
 {
     // Define the names of the four files to append
-    string filename0 = "result_0.txt";
-    string filename1 = "result_1.txt";
-    string filename2 = "result_2.txt";
-    string filename3 = "result_3.txt";
+    string filename0 = "results/result_0.txt";
+    string filename1 = "results/result_1.txt";
+    string filename2 = "results/result_2.txt";
+    string filename3 = "results/result_3.txt";
 
     // Define the name of the output file
     string outputFilename = "final_output_2by2.txt";
