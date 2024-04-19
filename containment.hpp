@@ -9,7 +9,7 @@ class solveMatrix
 
 public:
     solveMatrix();
-    long fact(int z);
+    ZZ fact(int z);
     // vector<vector<int>> combo(vector<int> &arr, int n, int r);
     vector<int> get_next(vector<int> combo, int n, int r);
     // vector<int> getNext(vector<vector<int>> indicesCombination, int row, int indicesSize);
@@ -17,5 +17,5 @@ public:
     vector<int> get_kth_combination(int n, int r, int _index);
     mat_ZZ_p extractMinor(mat_ZZ_p matrix, vector<int> tempRow, vector<int> tempCol);
     // void extractMinorDet(mat_ZZ_p matrix, int k, long nCr, int n, int order_of_minor, int quota);
-    void extractMinorDet(mat_ZZ_p matrix, int n, int world_rank);
+    void extractMinorDet(mat_ZZ_p matrix, int n, int world_rank, int np);
 };

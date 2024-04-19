@@ -7,19 +7,21 @@ int main(int argc, char **argv)
 {
     solveMatrix m1;
 
-    int orderOfMat = 20;
+    // int orderOfMat = 20;
     // int orderOfMinor;
     // cout << "Enter the order of the minor :: ";
     // cin >> orderOfMinor;
-    cout << endl;
+    // cout << endl;
 
     ifstream file("inputMatrix.txt");
+    // ifstream file("kernel_78.txt");
+
     // ofstream file1("output.txt");
     mat_ZZ_p matrix;
-    // int n = matrix.NumRows();
     // cout << "Order of matrix :: " << n << endl;
     // Read the matrix from the file
     file >> matrix;
+    int orderOfMat = matrix.NumRows();
     // file1 << mat;
 
     // Close the file
@@ -56,8 +58,13 @@ int main(int argc, char **argv)
     int world_size;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
-    m1.extractMinorDet(matrix, orderOfMat, world_rank);
+    m1.extractMinorDet(matrix, orderOfMat, world_rank, world_size);
+    MPI_Barrier(MPI_COMM_WORLD); // Synchronize all processes
 
+    if (world_rank == 0)
+    {
+        cout << "Successfully executed!!" << endl;
+    }
     MPI_Finalize();
 
     return 0;
