@@ -1,9 +1,13 @@
 #include <bits/stdc++.h>
+#include <NTL/ZZ.h>
+#include <NTL/matrix.h>
+#include <NTL/mat_ZZ.h>
+#include <NTL/ZZ_p.h>
 #include "containment.hpp"
-// find set difference
 
 using namespace std;
-
+using namespace NTL;
+// find set difference
 vector<int> setDiff(vector<int> combo, int order_of_mat)
 {
     int k = 0;
@@ -102,59 +106,131 @@ vector<int> get_next_indices(vector<int> set_diff_vec, vector<int> combo, vector
 }
 
 // extract minor and determinant
+mat_ZZ_p extractMinor(mat_ZZ_p matrix, vector<int> tempRow, vector<int> tempCol)
+{
+    int order_of_minor = tempRow.size();
+    mat_ZZ_p minor_matrix;
+    minor_matrix.SetDims(order_of_minor, order_of_minor);
+    for (int matRow = 0; matRow < order_of_minor; matRow++)
+    {
+        for (int matCol = 0; matCol < order_of_minor; matCol++)
+        {
+            minor_matrix[matRow][matCol] = matrix[tempRow[matRow]][tempCol[matCol]];
+        }
+    }
 
+    return minor_matrix;
+}
 int main()
 {
-    vector<int> combo_row = {0, 2};
-    vector<int> combo_col = {5, 14};
 
-    vector<int> set_diff_vec_row(18);
-    vector<int> set_diff_vec_col(18);
+    solveMatrix m1; // creating object for constructor initialization of ZZ_p
+    ifstream file("inputMatrix.txt");
+    // ifstream file("kernel_78.txt");
 
-    int order_of_mat = 20;
+    mat_ZZ_p matrix;
+    // cout << "Order of matrix :: " << n << endl;
+    // Read the matrix from the file
+    file >> matrix;
+    int order_of_mat = matrix.NumRows();
+    // file1 << mat;
+
+    // Close the file
+    file.close();
+    // int order_of_mat = 20;
     int dev = 2;
-
-    set_diff_vec_row = setDiff(combo_row, 20); // combo we get from input from result file later on
-    set_diff_vec_col = setDiff(combo_col, 20);
-    for (int i = 0; i < set_diff_vec_col.size(); i++)
-    {
-        cout << set_diff_vec_col[i] << " ";
-    }
-    cout << endl;
-
-    // later to be used in extract_minor
-    vector<int> prev_combo_row = {0, 1}; // this will be given from get_kth_combo
-
     int nCr = 153; // 18C2
-    for (int row = 0; row < nCr; row++)
 
+    string filename = "final_output_2by2.txt";
+
+    ifstream infile(filename);
+    if (!infile.is_open())
     {
-        vector<int> next_indices_combo_row = get_next_indices(set_diff_vec_row, combo_row, prev_combo_row, 2, order_of_mat);
-        cout << "Row::" << row + 1 << endl;
-        for (int i = 0; i < next_indices_combo_row.size(); i++)
-        {
-            cout << next_indices_combo_row[i] << " ";
-        }
-        // for columns
+        cerr << "Error: Could not open file '" << filename << "'" << endl;
+        return 1;
+    }
+    int row_count = 1;
+    while (infile)
+    {
 
-        vector<int> prev_combo_col = {0, 1}; // this will be given from get_kth_combo or may not who knows
-        for (int col = 0; col < nCr; col++)
-
+        int row1, row2, col1, col2;
+        infile >> row1 >> row2 >> col1 >> col2;
+        // cout << row1 << " " << row2 << " " << col1 << " " << col2 << " " << endl;
+        // infile.close();
+        if (infile.eof())
         {
-            cout << endl
-                 << "Col::" << col + 1 << endl;
-            vector<int> next_indices_combo_col = get_next_indices(set_diff_vec_col, combo_col, prev_combo_col, 2, order_of_mat);
-            for (int i = 0; i < next_indices_combo_col.size(); i++)
-            {
-                cout << next_indices_combo_col[i] << " ";
-            }
-            cout << endl;
-            prev_combo_col = get_next(prev_combo_col, order_of_mat - combo_col.size(), dev);
+            break; // Handle end of file
         }
         cout << endl
-             << "===============" << endl;
-        prev_combo_row = get_next(prev_combo_row, order_of_mat - combo_row.size(), dev);
-    }
+             << "=======ROW :: " << row_count << " ========" << endl;
+        vector<int> combo_row = {row1, row2};
+        vector<int> combo_col = {col1, col2};
 
+        vector<int> set_diff_vec_row(18);
+        vector<int> set_diff_vec_col(18);
+
+        set_diff_vec_row = setDiff(combo_row, 20); // combo we get from input from result file later on
+        set_diff_vec_col = setDiff(combo_col, 20);
+        // for (int i = 0; i < set_diff_vec_col.size(); i++)
+        // {
+        //     cout << set_diff_vec_col[i] << " ";
+        // }
+        // cout << endl;
+
+        // later to be used in extract_minor
+        vector<int> prev_combo_row = {0, 1}; // this will be given from get_kth_combo
+
+        for (int row = 0; row < nCr; row++)
+
+        {
+            vector<int> next_indices_combo_row = get_next_indices(set_diff_vec_row, combo_row, prev_combo_row, 2, order_of_mat);
+            // cout << "Row::" << row + 1 << endl
+            //      << endl;
+            // for (int i = 0; i < next_indices_combo_row.size(); i++)
+            // {
+            //     cout << next_indices_combo_row[i] << " ";
+            // }
+            // for columns
+
+            vector<int> prev_combo_col = {0, 1}; // this will be given from get_kth_combo or may not who knows
+            for (int col = 0; col < nCr; col++)
+
+            {
+                // cout << endl
+                //      << "Col::" << col + 1 << endl;
+                vector<int> next_indices_combo_col = get_next_indices(set_diff_vec_col, combo_col, prev_combo_col, 2, order_of_mat);
+                // for (int i = 0; i < next_indices_combo_col.size(); i++)
+                // {
+                //     cout << next_indices_combo_col[i] << " ";
+                // }
+                // cout << endl;
+
+                // extract minor and find determinant  here
+                ZZ_p det = determinant(extractMinor(matrix, next_indices_combo_row, next_indices_combo_col));
+                // cout << "det:: " << det << endl;
+                if (det == 0)
+                {
+                    for (int index = 0; index < next_indices_combo_row.size(); index++)
+                    {
+                        cout << next_indices_combo_row[index] << " ";
+                    }
+                    // fout << "| ";
+                    for (int index = 0; index < next_indices_combo_col.size(); index++)
+                    {
+
+                        cout << next_indices_combo_col[index] << " ";
+                    }
+                    cout << endl;
+                }
+
+                prev_combo_col = get_next(prev_combo_col, order_of_mat - combo_col.size(), dev);
+            }
+            // cout << endl
+            //      << "===============" << endl;
+            prev_combo_row = get_next(prev_combo_row, order_of_mat - combo_row.size(), dev);
+        }
+        row_count++;
+    }
+    cout << "Successfully Done!" << endl;
     return 0;
 }
