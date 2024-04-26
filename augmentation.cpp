@@ -1,14 +1,9 @@
-#include <bits/stdc++.h>
-#include <NTL/ZZ.h>
-#include <NTL/matrix.h>
-#include <NTL/mat_ZZ.h>
-#include <NTL/ZZ_p.h>
 #include "containment.hpp"
 
 using namespace std;
 using namespace NTL;
 // find set difference
-vector<int> setDiff(vector<int> combo, int order_of_mat)
+vector<int> solveMatrix::setDiff(vector<int> combo, int order_of_mat)
 {
     int k = 0;
     int set_diff_vec_size = order_of_mat - combo.size();
@@ -42,33 +37,9 @@ vector<int> setDiff(vector<int> combo, int order_of_mat)
     return set_diff_vec;
 }
 
-// find those combinations >2 merge input combo and combinations one by one
-vector<int> get_next(vector<int> combo, int n, int r)
-{
-    // Find the rightmost element to increment
-    int x = r - 1;
-    while (x >= 0 && combo[x] == n - r + x)
-    {
-        x--;
-    }
-
-    // termination condition
-    if (x < 0)
-    {
-        return {};
-    }
-    // Increment the rightmost element and adjust subsequent elements
-    combo[x]++;
-    for (int j = x + 1; j < r; j++)
-    {
-        combo[j] = combo[j - 1] + 1;
-    }
-
-    return combo;
-}
 // combo is input we get from result file
 
-vector<int> get_next_indices(vector<int> set_diff_vec, vector<int> combo, vector<int> prev_combo_row, int dev, int order_of_mat)
+vector<int> solveMatrix::get_next_indices(vector<int> set_diff_vec, vector<int> combo, vector<int> prev_combo_row, int dev, int order_of_mat)
 {
     int i, j, x;
     int n = order_of_mat - combo.size();
@@ -105,49 +76,32 @@ vector<int> get_next_indices(vector<int> set_diff_vec, vector<int> combo, vector
     return indices_list;
 }
 
-// extract minor and determinant
-mat_ZZ_p extractMinor(mat_ZZ_p matrix, vector<int> tempRow, vector<int> tempCol)
-{
-    int order_of_minor = tempRow.size();
-    mat_ZZ_p minor_matrix;
-    minor_matrix.SetDims(order_of_minor, order_of_minor);
-    for (int matRow = 0; matRow < order_of_minor; matRow++)
-    {
-        for (int matCol = 0; matCol < order_of_minor; matCol++)
-        {
-            minor_matrix[matRow][matCol] = matrix[tempRow[matRow]][tempCol[matCol]];
-        }
-    }
-
-    return minor_matrix;
-}
-int main()
+void solveMatrix::get_contained_matrix(mat_ZZ_p matrix, int processID)
 {
 
-    solveMatrix m1; // creating object for constructor initialization of ZZ_p
-    ifstream file("inputMatrix.txt");
-    // ifstream file("kernel_78.txt");
+    // things to change ::
+    // if we take input as 3 by 3 the input of rows and cols changes
+    // dev , prev_combo_row and col
 
-    mat_ZZ_p matrix;
-    // cout << "Order of matrix :: " << n << endl;
-    // Read the matrix from the file
-    file >> matrix;
     int order_of_mat = matrix.NumRows();
-    // file1 << mat;
+    int dev = 3;
+    ZZ nCr = fact(order_of_mat - dev) / (fact(dev) * fact(order_of_mat - dev - dev));
+    // long nCr = conv<long>(comboN);
+    // cout << "nCr::" << nCr << endl;
+    // input file
+    string in_filename = "results/result_" + to_string(processID) + ".txt";
+    ifstream infile(in_filename);
 
-    // Close the file
-    file.close();
-    // int order_of_mat = 20;
-    int dev = 2;
-    int nCr = 153; // 18C2
+    // output file
+    stringstream filenameStream;
+    filenameStream << "containment_results/con_result_" << processID << ".txt";
+    string out_filename = filenameStream.str();
 
-    string filename = "final_output_2by2.txt";
-
-    ifstream infile(filename);
+    ofstream fout(out_filename, ios::app);
     if (!infile.is_open())
     {
-        cerr << "Error: Could not open file '" << filename << "'" << endl;
-        return 1;
+        cerr << "Error: Could not open file " << in_filename << " " << endl;
+        exit(1);
     }
     int row_count = 1;
     while (infile)
@@ -155,29 +109,22 @@ int main()
 
         int row1, row2, col1, col2;
         infile >> row1 >> row2 >> col1 >> col2;
-        // cout << row1 << " " << row2 << " " << col1 << " " << col2 << " " << endl;
-        // infile.close();
+
         if (infile.eof())
         {
-            break; // Handle end of file
+            break;
         }
-        cout << endl
-             << "=======ROW :: " << row_count << " ========" << endl;
+        // fout << endl
+        //  << "=======ROW :: " << row_count << " ========" << endl;
         vector<int> combo_row = {row1, row2};
         vector<int> combo_col = {col1, col2};
 
-        vector<int> set_diff_vec_row(18);
-        vector<int> set_diff_vec_col(18);
+        vector<int> set_diff_vec_row(order_of_mat - combo_row.size());
+        vector<int> set_diff_vec_col(order_of_mat - combo_row.size());
 
-        set_diff_vec_row = setDiff(combo_row, 20); // combo we get from input from result file later on
-        set_diff_vec_col = setDiff(combo_col, 20);
-        // for (int i = 0; i < set_diff_vec_col.size(); i++)
-        // {
-        //     cout << set_diff_vec_col[i] << " ";
-        // }
-        // cout << endl;
+        set_diff_vec_row = setDiff(combo_row, order_of_mat); // combo we get from input from result file later on
+        set_diff_vec_col = setDiff(combo_col, order_of_mat);
 
-        // later to be used in extract_minor
         vector<int> prev_combo_row = {0, 1}; // this will be given from get_kth_combo
 
         for (int row = 0; row < nCr; row++)
@@ -210,17 +157,23 @@ int main()
                 // cout << "det:: " << det << endl;
                 if (det == 0)
                 {
-                    for (int index = 0; index < next_indices_combo_row.size(); index++)
-                    {
-                        cout << next_indices_combo_row[index] << " ";
-                    }
-                    // fout << "| ";
-                    for (int index = 0; index < next_indices_combo_col.size(); index++)
+                    if (fout.is_open())
                     {
 
-                        cout << next_indices_combo_col[index] << " ";
+                        for (int index = 0; index < next_indices_combo_row.size(); index++)
+                        {
+                            fout << next_indices_combo_row[index] << " ";
+                        }
+                        // fout << "| ";
+                        for (int index = 0; index < next_indices_combo_col.size(); index++)
+                        {
+
+                            fout << next_indices_combo_col[index] << " ";
+                        }
+                        fout << endl;
                     }
-                    cout << endl;
+                    else
+                        cerr << "Unable to open the file!" << endl;
                 }
 
                 prev_combo_col = get_next(prev_combo_col, order_of_mat - combo_col.size(), dev);
@@ -231,6 +184,25 @@ int main()
         }
         row_count++;
     }
-    cout << "Successfully Done!" << endl;
-    return 0;
 }
+// int main()
+// {
+
+//     solveMatrix m1; // creating object for constructor initialization of ZZ_p
+//     ifstream file("inputMatrix.txt");
+//     // ifstream file("kernel_78.txt");
+
+//     mat_ZZ_p matrix;
+//     // cout << "Order of matrix :: " << n << endl;
+//     // Read the matrix from the file
+//     file >> matrix;
+//     int order_of_mat = matrix.NumRows();
+//     // file1 << mat;
+
+//     // Close the file
+//     file.close();
+//     // int order_of_mat = 20;
+
+//     cout << "Successfully Done!" << endl;
+//     return 0;
+// }
