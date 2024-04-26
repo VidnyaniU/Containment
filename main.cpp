@@ -58,7 +58,9 @@ int main(int argc, char **argv)
     int world_size;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
-    m1.extractMinorDet(matrix, orderOfMat, world_rank, world_size);
+    // m1.extractMinorDet(matrix, orderOfMat, world_rank, world_size);
+
+    m1.get_contained_matrix(matrix, world_rank);
     MPI_Barrier(MPI_COMM_WORLD); // Synchronize all processes
 
     if (world_rank == 0)
@@ -66,6 +68,7 @@ int main(int argc, char **argv)
         cout << "Successfully executed!!" << endl;
     }
     MPI_Finalize();
+    // string filename = "final_output_2by2.txt";
 
     return 0;
 }

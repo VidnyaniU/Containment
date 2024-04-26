@@ -1,8 +1,3 @@
-#include <bits/stdc++.h>
-#include <NTL/ZZ.h>
-#include <NTL/matrix.h>
-#include <NTL/mat_ZZ.h>
-#include <NTL/ZZ_p.h>
 #include "containment.hpp"
 using namespace std;
 using namespace NTL;
@@ -164,6 +159,6 @@ void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int n, int processID, int np)
         }
         tempRow = get_next(tempRow, n, order_of_minor);
     }
-    fout.close();
+    // fout.close();
 }
 // fout.close();
