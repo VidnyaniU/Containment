@@ -110,7 +110,7 @@ mat_ZZ_p solveMatrix::extractMinor(mat_ZZ_p matrix, vector<int> tempRow, vector<
 void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int n, int processID, int np)
 {
 
-    int order_of_minor = 2;
+    int order_of_minor = 3;
     ZZ comboN = fact(n) / (fact(order_of_minor) * fact(n - order_of_minor));
     long nCr = conv<long>(comboN);
     int quota = nCr / np;
@@ -119,7 +119,7 @@ void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int n, int processID, int np)
     int row, col;
 
     stringstream filenameStream;
-    filenameStream << "results/result_" << processID << ".txt";
+    filenameStream << "results_30_1/result_" << processID << ".txt";
     string filename = filenameStream.str();
 
     ofstream fout(filename, ios::app);

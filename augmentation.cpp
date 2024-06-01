@@ -94,7 +94,7 @@ void solveMatrix::get_contained_matrix(mat_ZZ_p matrix, int processID)
 
     // output file
     stringstream filenameStream;
-    filenameStream << "containment_results/con_result_" << processID << ".txt";
+    filenameStream << "results_30_1/con_30_1_1d" << processID << ".txt";
     string out_filename = filenameStream.str();
 
     ofstream fout(out_filename, ios::app);
