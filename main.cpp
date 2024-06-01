@@ -72,3 +72,7 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
+// command for compile and run
+// mpic++ containment.cpp augmentation.cpp main.cpp -o au -lntl -lgmp -pthread
+// time mpirun -n 4 ./au
