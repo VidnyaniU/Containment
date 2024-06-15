@@ -110,7 +110,7 @@ mat_ZZ_p solveMatrix::extractMinor(mat_ZZ_p matrix, vector<int> tempRow, vector<
 void solveMatrix::extractMinorDet(mat_ZZ_p matrix, int n, int processID, int np)
 {
 
-    int order_of_minor = 3;
+    int order_of_minor = 2;
     ZZ comboN = fact(n) / (fact(order_of_minor) * fact(n - order_of_minor));
     long nCr = conv<long>(comboN);
     int quota = nCr / np;

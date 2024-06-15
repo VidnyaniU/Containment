@@ -84,12 +84,12 @@ void solveMatrix::get_contained_matrix(mat_ZZ_p matrix, int processID)
     // dev , prev_combo_row and col
 
     int order_of_mat = matrix.NumRows();
-    int dev = 3;
+    int dev = 2;
     ZZ nCr = fact(order_of_mat - dev) / (fact(dev) * fact(order_of_mat - dev - dev));
     // long nCr = conv<long>(comboN);
     // cout << "nCr::" << nCr << endl;
     // input file
-    string in_filename = "results/result_" + to_string(processID) + ".txt";
+    string in_filename = "results_30_1/result_" + to_string(processID) + ".txt";
     ifstream infile(in_filename);
 
     // output file
@@ -103,7 +103,7 @@ void solveMatrix::get_contained_matrix(mat_ZZ_p matrix, int processID)
         cerr << "Error: Could not open file " << in_filename << " " << endl;
         exit(1);
     }
-    int row_count = 1;
+    // int row_count = 1;
     while (infile)
     {
 
@@ -130,7 +130,7 @@ void solveMatrix::get_contained_matrix(mat_ZZ_p matrix, int processID)
         for (int row = 0; row < nCr; row++)
 
         {
-            vector<int> next_indices_combo_row = get_next_indices(set_diff_vec_row, combo_row, prev_combo_row, 2, order_of_mat);
+            vector<int> next_indices_combo_row = get_next_indices(set_diff_vec_row, combo_row, prev_combo_row, dev, order_of_mat);
             // cout << "Row::" << row + 1 << endl
             //      << endl;
             // for (int i = 0; i < next_indices_combo_row.size(); i++)
@@ -145,7 +145,7 @@ void solveMatrix::get_contained_matrix(mat_ZZ_p matrix, int processID)
             {
                 // cout << endl
                 //      << "Col::" << col + 1 << endl;
-                vector<int> next_indices_combo_col = get_next_indices(set_diff_vec_col, combo_col, prev_combo_col, 2, order_of_mat);
+                vector<int> next_indices_combo_col = get_next_indices(set_diff_vec_col, combo_col, prev_combo_col, dev, order_of_mat);
                 // for (int i = 0; i < next_indices_combo_col.size(); i++)
                 // {
                 //     cout << next_indices_combo_col[i] << " ";
@@ -182,27 +182,6 @@ void solveMatrix::get_contained_matrix(mat_ZZ_p matrix, int processID)
             //      << "===============" << endl;
             prev_combo_row = get_next(prev_combo_row, order_of_mat - combo_row.size(), dev);
         }
-        row_count++;
+        // row_count++;
     }
 }
-// int main()
-// {
-
-//     solveMatrix m1; // creating object for constructor initialization of ZZ_p
-//     ifstream file("inputMatrix.txt");
-//     // ifstream file("kernel_78.txt");
-
-//     mat_ZZ_p matrix;
-//     // cout << "Order of matrix :: " << n << endl;
-//     // Read the matrix from the file
-//     file >> matrix;
-//     int order_of_mat = matrix.NumRows();
-//     // file1 << mat;
-
-//     // Close the file
-//     file.close();
-//     // int order_of_mat = 20;
-
-//     cout << "Successfully Done!" << endl;
-//     return 0;
-// }
